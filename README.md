@@ -59,7 +59,7 @@ DB_PASSWORD=your_db_password
 DB_HOST=your_db_host
 DB_PORT=your_db_post
 KAFKA_HOST=your_kafka_host
-KAFKA_PORT=your_db_post
+KAFKA_PORT=your_kafka_post
 ```
 
 ## Docker
