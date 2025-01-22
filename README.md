@@ -45,7 +45,12 @@ cd bewise-ai
 
 ## Настройка окружения
 
-Создайте файл .env в корневой директории проекта и добавьте переменные окружения:
+#### Создайте файл .env в корневой директории проекта 
+```
+echo . > .env
+```
+
+и добавьте переменные окружения:
 
 ```
 DB_NAME=your_db_name
@@ -74,5 +79,6 @@ docker-compose exec fastapi alembic upgrade head
 ## API документация
 После запуска веб-приложения документация будет доступна по следующим URL:
 
-Swagger: http://0.0.0.0:8000/docs
+- Swagger: http://localhost:8000/docs
+- KAFKA UI: http://localhost:8086/
 
