@@ -12,7 +12,7 @@ from app.integrations.kafka import get_kafka_producer
 from app.applications.models import Applications
 from app.applications.schemas import SApplication
 from app.integrations.logger_config import setup_logger
-from app.service.pagination_schema import SPagination, pagination_params, OrderEnum
+from app.service.pagination_schema import SPagination, pagination_params, OrderByEnum
 
 
 logger = setup_logger()
@@ -35,7 +35,7 @@ class ApplicationsService:
                     user_name, pagination)
 
         async with async_session_maker() as session:
-            order = desc if pagination.order == OrderEnum.DESC else asc
+            order = desc if pagination.order_by == OrderByEnum.DESC else asc
 
             filter_by = {}
             if user_name:
@@ -45,14 +45,14 @@ class ApplicationsService:
             total_result = await session.execute(total_query)
             total_count = total_result.scalar()
 
-            total_pages = (total_count + pagination.perPage - 1) // pagination.perPage
+            total_pages = (total_count + pagination.per_page - 1) // pagination.per_page
 
             query = (
                 select(cls.model)
                 .filter_by(**filter_by)
-                .order_by(order(cls.model.id))
-                .limit(pagination.perPage)
-                .offset((pagination.page - 1) * pagination.perPage)
+                .order_by(order(getattr(cls.model, pagination.sort_by.value)))
+                .limit(pagination.per_page)
+                .offset((pagination.page - 1) * pagination.per_page)
             )
 
             result = await session.execute(query)
@@ -88,8 +88,5 @@ class ApplicationsService:
                     )
             except Exception as e:
                 logger.error("Ошибка при отправке данных в Kafka: %s", str(e), exc_info=True)
-
-            result = SApplication(**values)
-            print(type(result), result)
 
         return SApplication(**values)
